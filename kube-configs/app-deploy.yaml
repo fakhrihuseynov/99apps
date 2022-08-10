@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my99app
+  labels:
+    app: 99apps
+    env: prod
+    owner: Fakhri_Huseynov
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      project: 99app
+  template:
+    metadata:
+      labels:
+        project: 99app
+    spec:
+      containers:
+        - name: appcontainer
+          image: faxri/99app:service-app
+          ports:
+            - containerPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: appservice
+  labels:
+    env:   prod
+    owner: Fakhri_Huseynov
+spec:
+  selector:
+    project: 99app            # Selecting PODS with those Labels
+  ports:
+    - name:       app-listener
+      protocol:   TCP
+      port:       80          # Port on Load Balancer
+      targetPort: 8001          # Port on POD
+  type: LoadBalancer
